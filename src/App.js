@@ -1,46 +1,53 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom' 
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom' 
+import React, { useState, useEffect } from 'react';
 import Signup from './components/Signup';
-import Register from './components/Register';
+import Login from './components/Login';
+import Home from './components/Home';
+import Companies from './components/Companies';
+import CompanyList from './components/CompanyList';
+import CompanyDetails from './components/CompanyDetails';
+
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if a valid token is present (e.g., in local storage)
+    const token = localStorage.getItem('token');
+    console.log("-----token----", token)
+    if (token) {
+      // If the token is valid, set isAuthenticated to true
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Clear token from local storage
+    localStorage.removeItem('token');
+    // Update isAuthenticated to false
+    setIsAuthenticated(false);
+    // Redirect to signup page
+    return <Navigate to="/login" />;
+  };
+
   return (
     <Router>
-    <div className="App">
+      <div>
         <Routes>
-          <Route>
-              <Route path="/" element={<Signup />} />
-              <Route path="/" element={<Register />} />
-          </Route>
+          {/* Conditional redirect to the home page */}
+          <Route
+            path="/" element={isAuthenticated ? <Home logout={handleLogout} /> : <Navigate to="/login" />}
+          />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/companies" element={<Companies />} ></Route>
+          <Route path="/companies" element={<CompanyList />} ></Route>
+          <Route path="/companies/:id" element={<CompanyDetails/>} ></Route>
         </Routes>
-    </div>
+      </div>
     </Router>
   );
 }
 
 export default App;
-
-// import React, { useState } from "react";
-// import logo from './logo.svg';
-// import './App.css';
-
-// import { Register } from "./Register";
-// import Signup from "./components/Signup";
-
-// function App() {
-//   const [currentForm, setCurrentForm] = useState('signup');
-
-//   const toggleForm = (formName) => {
-//     setCurrentForm(formName);
-//   }
-
-//   return (
-//     <div className="App">
-//       {
-//         currentForm === "signup" ? <Signup onFormSwitch={toggleForm} /> : <Register onFormSwitch={toggleForm} />
-//       }
-//     </div>
-//   );
-// }
-
-// export default App;
