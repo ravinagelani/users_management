@@ -7,6 +7,8 @@ import Home from './components/Home';
 import Companies from './components/Companies';
 import CompanyList from './components/CompanyList';
 import CompanyDetails from './components/CompanyDetails';
+import Departments from '/Users/imac/Documents/ravina/react/users-management/src/Dpartment/Departments.js'
+
 
 
 function App() {
@@ -44,6 +46,7 @@ function App() {
           <Route path="/companies" element={<Companies />} ></Route>
           <Route path="/companies" element={<CompanyList />} ></Route>
           <Route path="/companies/:id" element={<CompanyDetails/>} ></Route>
+          <Route path="/companies/:id/departments" element={<Departments />}/>
         </Routes>
       </div>
     </Router>

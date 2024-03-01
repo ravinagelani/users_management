@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
 const CompanyDetails = () => {
   const { id } = useParams();
+  console.log('-----id-----', id);
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,6 +71,9 @@ const CompanyDetails = () => {
             <td>Active</td>
             <td>{company.active ? 'Yes' : 'No'}</td>
           </tr>
+          <Link to={`/companies/${company.id}/departments`}>
+          View Departments
+        </Link>
         </tbody>
       </table>
     </div>

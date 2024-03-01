@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
-const AddCompany = () => {
+const AddCompany = ({ onCompanyAdded }) => {
     const [company, setCompany] = useState({ name: '', location: '', about: '', type: '' });
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Make a POST request to your backend endpoint
             let authToken = localStorage.getItem('token');
             const bakend_host = process.env.REACT_APP_BACKEND_HOST;
             const response = await axios.post(
-  `${bakend_host}/api/companies/`,
+                 `${bakend_host}/api/companies/`,
                 {
                     name: company.name,
                     location: company.location,
@@ -26,19 +27,32 @@ const AddCompany = () => {
                     withCredentials: true,
                 }
             );
-
-            // Check if the request was successful
-            if (response.status === 201) {
-                // Reset the state after adding the company
+            let response_data = response.data
+            console.log("---response_data---", response_data)
+            if (response_data.status === 201) {
+                // Pass the newly added company back to the parent component
+                onCompanyAdded(response_data.data.Company);
                 setCompany({ name: '', location: '', about: '', type: '' });
-                alert('Company added successfully!');
+                setModalVisible(false);
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Company added successfully!',
+                    icon: 'success'
+                });
             } else {
-                // Handle the case where the request fails
-                alert('Failed to add company. Please try again later.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to add company. Please try again later.',
+                    icon: 'error'
+                });
             }
         } catch (error) {
             console.error('Error adding company:', error);
-            alert('An error occurred while adding the company. Please try again later.');
+             Swal.fire({
+                title: 'Error!',
+                text: 'companies with this name already exists',
+                icon: 'error'
+            });
         }
     };
 
@@ -46,47 +60,57 @@ const AddCompany = () => {
         setCompany({ ...company, [e.target.name]: e.target.value });
     };
 
+    const openModal = () => {
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
     return (
         <div className="container my-3">
             
-            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" className="btn btn-primary" onClick={openModal}>
                 Add Company
             </button>
 
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Add Company</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            {modalVisible && (
+                <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">Add Company</h5>
+                                <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+                            </div>
+                            <form onSubmit={handleSubmit}>
+                                <div className="modal-body">
+                                    <div className="mb-3">
+                                        <label htmlFor="name" className="form-label">Name</label>
+                                        <input type="text" className="form-control" id="name" name="name" value={company.name} onChange={handleChange} minLength={5} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="location" className="form-label">Location</label>
+                                        <input type="text" className="form-control" id="location" name="location" value={company.location} onChange={handleChange} minLength={5} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="about" className="form-label">About</label>
+                                        <input type="text" className="form-control" id="about" name="about" value={company.about} onChange={handleChange} minLength={5} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="type" className="form-label">Type</label>
+                                        <input type="text" className="form-control" id="type" name="type" value={company.type} onChange={handleChange} minLength={5} required />
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
+                                    <button type="submit" className="btn btn-primary" >Add</button>
+                                </div>
+                            </form>
                         </div>
-                        <form onSubmit={handleSubmit}>
-                            <div className="modal-body">
-                                <div className="mb-3">
-                                    <label htmlFor="name" className="form-label">Name</label>
-                                    <input type="text" className="form-control" id="name" name="name" value={company.name} onChange={handleChange} minLength={5} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="location" className="form-label">Location</label>
-                                    <input type="text" className="form-control" id="location" name="location" value={company.location} onChange={handleChange} minLength={5} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="about" className="form-label">About</label>
-                                    <input type="text" className="form-control" id="about" name="about" value={company.about} onChange={handleChange} minLength={5} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="type" className="form-label">Type</label>
-                                    <input type="text" className="form-control" id="type" name="type" value={company.type} onChange={handleChange} minLength={5} required />
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-primary">Add</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
