@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom' 
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Signup from './components/Signup';
 import Login from './components/Login';
@@ -7,9 +7,10 @@ import Home from './components/Home';
 import Companies from './components/Companies';
 import CompanyList from './components/CompanyList';
 import CompanyDetails from './components/CompanyDetails';
-import Departments from '/Users/imac/Documents/ravina/react/users-management/src/Dpartment/Departments.js'
-
-
+import Departments from './Department/Departments';
+import Employees from './Employees/Employees'; 
+import DepartmentEmployees from './Department/DepartmentEmployees'; 
+import AddEmployees from './Employees/AddEmployees';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,10 +44,13 @@ function App() {
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/companies" element={<Companies />} ></Route>
-          <Route path="/companies" element={<CompanyList />} ></Route>
-          <Route path="/companies/:id" element={<CompanyDetails/>} ></Route>
-          <Route path="/companies/:id/departments" element={<Departments />}/>
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies" element={<CompanyList />} />
+          <Route path="/companies/:id" element={<CompanyDetails />} />
+          <Route path="/companies/:companyId/departments" element={<Departments />} />
+          <Route path="/companies/:companyId/employees" element={<Employees />} />
+          <Route path="/departments/:departmentId/employees" element={<DepartmentEmployees />} />
+          <Route path="/companies/:companyId/departments/:departmentId/employees" element={<AddEmployees />} />
         </Routes>
       </div>
     </Router>

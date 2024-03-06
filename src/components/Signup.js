@@ -1,6 +1,7 @@
-import React, { useState, useEffect} from 'react';
-import {Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Signup = () => {
     const [usersignup, setUserSignup] = useState({
@@ -15,48 +16,53 @@ const Signup = () => {
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     if (!token) {
-    //         alert("Please fill the signup form first");
-    //         navigate('/signup');
-    //     }
-    // }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log("---validateForm()---", validateForm(),)
             if (validateForm()) {
-                const bakend_host = process.env.REACT_APP_BACKEND_HOST;
-                console.log(bakend_host);
+                const backend_host = process.env.REACT_APP_BACKEND_HOST;
 
-                const response = await axios.post(`${bakend_host}/api/user/register/`, usersignup, {
+                const response = await axios.post(`${backend_host}/api/user/register/`, usersignup, {
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     withCredentials: true // Ensure CORS is enabled
                 });
-                console.log(response.data);
-                var response_data = response.data
-                if (response_data.success) {
-                    if (response_data.status === 201) {
-                        // Form is valid, you can submit the data
-                        localStorage.setItem('token', response_data.data.token.access)
-                        console.log(" successfully:", response_data);
-                        alert("signup successful!");
-                        navigate('/login');
+
+                if (response.data.success) {
+                    if (response.data.status === 201) {
+                        localStorage.setItem('token', response.data.data.token.access);
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Signup successful!",
+                            icon: "success",
+                            button: "Login",
+                        }).then(() => {
+                            navigate('/login');
+                        });
                     }
-                }
-                else {
-                    console.log(response)
+                } else {
+                    // If registration fails
+                    const errorMessage = response.data.message || "Registration failed";
+                    Swal.fire({
+                        title: "Error!",
+                        text: errorMessage,
+                        icon: "error",
+                        button: "OK",
+                    });
                 }
             }
-
         } catch (error) {
             console.error('Error submitting form:', error);
+            Swal.fire({
+                title: "Error!",
+                text: "users with this username already exists. Please try again later.",
+                icon: "error",
+                button: "OK",
+            });
         }
     }
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;

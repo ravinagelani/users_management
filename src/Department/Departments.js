@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import AddDepartment from './AddDepartment';
 import UpdateDepartment from './UpdateDepartment'; // Import UpdateDepartment component
 
 const Departments = () => {
-  const { id } = useParams();
+  const { companyId } = useParams();
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companyNotFound, setCompanyNotFound] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
+    console.log('---companyID', companyId)
     const fetchDepartments = async () => {
       try {
         const backend_host = process.env.REACT_APP_BACKEND_HOST;
-        const response = await axios.get(`${backend_host}/api/company/${id}/department`);
+        const response = await axios.get(`${backend_host}/api/company/${companyId}/department`);
         if (response.data.data.Departments.length === 0) {
           setCompanyNotFound(true);
         } else {
@@ -33,14 +35,10 @@ const Departments = () => {
     };
 
     fetchDepartments();
-  }, [id]);
+  }, [companyId]);
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
-
-  const handleDepartmentAdded = () => {
-    toggleModal();
+  const handleDepartmentAdded = (newDepartment) => {
+    setDepartments([...departments, newDepartment]);
   };
 
   const handleDelete = async (departmentId) => {
@@ -59,10 +57,10 @@ const Departments = () => {
         // Send delete request
         const backend_host = process.env.REACT_APP_BACKEND_HOST;
         await axios.delete(`${backend_host}/api/departments/${departmentId}`);
-        
+
         // Update UI
         setDepartments(departments.filter(department => department.id !== departmentId));
-        
+
         Swal.fire(
           'Deleted!',
           'Your department has been deleted.',
@@ -79,51 +77,62 @@ const Departments = () => {
     }
   };
 
+
+  const handleupdatedDepartment = (updatedDepartment) => {
+    setDepartments(departments.map(dep =>
+      dep.id === updatedDepartment.id ? updatedDepartment : dep
+    ));
+  };
+
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container">
       <h1 className="text-center">Departments</h1>
       <hr />
-      <button onClick={toggleModal} className="btn btn-primary mb-3">Add Departments</button>
-      <AddDepartment companyId={id} showModal={showModal} onDepartmentAdded={handleDepartmentAdded} />
+      <AddDepartment companyId={companyId} setDepartments={setDepartments} onDepartmentAdded={handleDepartmentAdded} />
       {companyNotFound ? (
         <div className="text-center"><b>Company not found</b></div>
       ) : (
-        <table className="table table-bordered mt-5">
-          <thead className="table table-secondary">
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Created</th>
-              <th>Updated</th>
-              <th colSpan="2" className="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {departments.map(department => (
-              <tr key={department.id}>
-                <td>{department.name}</td>
-                <td>{department.description}</td>
-                <td>{department.created}</td>
-                <td>{department.updated}</td>
-                <td>
-                  {/* Uncomment and integrate UpdateDepartment component */}
-                  <UpdateDepartment department={department} companyId={id} onUpdate={(updatedDepartment) => {
-                    const updatedDepartments = departments.map(dep => (dep.id === updatedDepartment.id ? updatedDepartment : dep));
-                    setDepartments(updatedDepartments);
-                  }} />
-                </td>
-                <td>
-                  <button className="btn btn-outline-danger" onClick={() => handleDelete(department.id)}>
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                  </button>
-                </td>
+          <table className="table table-bordered mt-5">
+            <thead className="table table-secondary">
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th colSpan="2" className="text-center">Action</th>
+                <th>Employees</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {departments.map(department => (
+                <tr key={department.id}>
+                  <td>{department.name}</td>
+                  <td>{department.description}</td>
+                  <td>{department.created}</td>
+                  <td>{department.updated}</td>
+                  <td>
+                    {department && (
+                      <UpdateDepartment department={department} companyId={companyId} onUpdate={handleupdatedDepartment} />
+                    )}
+                  </td>
+                  <td>
+                    <button className="btn btn-outline-danger" onClick={() => handleDelete(department.id)}>
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
+                  </td>
+                  <td>
+                    <Link to={`/departments/${department.id}/employees?companyId=${companyId}`} className="btn btn-outline-primary">
+                      <FontAwesomeIcon icon={faUsers} />
+                    </Link>
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
     </div>
   );
 };

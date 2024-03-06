@@ -18,7 +18,7 @@ const Navbar = () => {
                         <Link className="navbar-brand" to="/">Home</Link>
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="nav-link active" aria-current="page" to="/companies" >companies</Link>
+                                <Link className="nav-link active" aria-current="page" to="/companies" >Companies</Link>
                             </li>
                         </ul>
                         <button onClick={handleLogout} className="btn btn-outline-success" type="submit" >Log out</button>

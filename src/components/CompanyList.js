@@ -1,45 +1,68 @@
 import React, { useState, useEffect } from 'react';
+import { refreshToken } from './AuthToken.js'
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import AddCompany from './AddCompany';
 import EditCompany from './EditCompany';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faBuilding, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
 const CompanyList = () => {
-  const { id } = useParams();
+  // let navigate = useNavigate();
+  const {id} = useParams();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10); // Number of items per page
+  const [totalPages, setTotalPages] = useState(1); // Total number of pages
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        let authToken = localStorage.getItem('token');
-        const bakend_host = process.env.REACT_APP_BACKEND_HOST;
-        const response = await axios.get(`${bakend_host}/api/companies/`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`
-          },
-          withCredentials: true // Ensure CORS is enabled
-        });
-        let companiesArray = Array.isArray(response.data.data.Companies) ? response.data.data.Companies : [response.data.data];
-        setCompanies(companiesArray);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-        if (error.response && error.response.status === 401) {
-          console.log('Token expired or invalid, refreshing token...');
-        } else {
-          setLoading(false);
-        }
-      }
-    };
-
     fetchCompanies();
-  }, [id]);
+  }, [currentPage]); // Fetch data whenever the currentPage changes
+
+  const fetchCompanies = async () => {
+    try {
+      let authToken = localStorage.getItem('token');
+      const backend_host = process.env.REACT_APP_BACKEND_HOST;
+      const response = await axios.get(`${backend_host}/api/companies/`, {
+        params: {
+          page: currentPage,
+          pageSize: pageSize
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`
+        },
+        withCredentials: true // Ensure CORS is enabled
+      });
+      let companiesArray = Array.isArray(response.data.data.Companies) ? response.data.data.Companies : [response.data.data];
+      setCompanies(companiesArray);
+      setTotalPages(Math.ceil(response.data.totalItems / pageSize));
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+      if (error.response && error.response.status === 401) {
+        console.log('Token expired or invalid, refreshing token...');
+        // try {
+        //   const refreshToken = localStorage.getItem('refreshToken');
+        //   if (refreshToken) {
+        //     await refreshToken(); // Call refreshToken function to get a new access token
+        //     // Retry the original API call after refreshing the token
+        //     return fetchCompanies();
+        //   } else {
+        //     throw new Error('Refresh token is missing');
+        //   }
+        // } catch (refreshError) {
+        //   console.error('Error refreshing token:', refreshError);
+        //   navigate('/login');
+        // }
+      } else {
+        setLoading(false);
+      }
+    }
+  };
 
   const handleCompanyAdded = (newCompany) => {
     setCompanies([...companies, newCompany]);
@@ -84,10 +107,10 @@ const CompanyList = () => {
       );
     }
   };
-
-  // Handle edit functionality - You should replace this with your own edit logic
+   
+  // Handle edit functionality
   const handleEdit = (companyId) => {
-    // Your edit logic here
+    // Edit logic
   };
   const handleCompanyUpdated = (updatedCompany) => {
     setCompanies(companies.map(company =>
@@ -97,6 +120,16 @@ const CompanyList = () => {
 
   if (loading) return <div>Loading...</div>;
 
+  // Generate pagination links
+  const paginationLinks = [];
+  for (let i = 1; i <= totalPages; i++) {
+    paginationLinks.push(
+      <li className={`page-item ${currentPage === i ? 'active' : ''}`} key={i}>
+        <button className="page-link" onClick={() => setCurrentPage(i)}>{i}</button>
+      </li>
+    );
+  }
+
   return (
     <div className="container">
       <div className="mt-3">
@@ -104,7 +137,8 @@ const CompanyList = () => {
         <hr />
         <AddCompany onCompanyAdded={handleCompanyAdded} setCompanies={setCompanies} />
         <table className="table table-bordered table-hover">
-          <thead>
+          {/* Table header */}
+          <thead className="table table-secondary">
             <tr>
               <th>Id</th>
               <th>Name</th>
@@ -114,9 +148,12 @@ const CompanyList = () => {
               <th>Created</th>
               <th>Updated</th>
               <th>Active</th>
-              <th colSpan="3" className="text-center">Action</th>
+              <th colSpan="2" className="text-center">Action</th>
+              <th>dep</th>
+              <th>Employees</th>
             </tr>
           </thead>
+          {/* Table body */}
           <tbody>
             {companies.filter(company => company.name !== '' && company.active).map((company, index) => (
               <tr key={index}>
@@ -139,13 +176,30 @@ const CompanyList = () => {
                     </button>
                   </Link>
                 </td>
+                <td>
+                  <Link to={`/companies/${company.id}/employees`}>
+                    <button className="btn btn-outline-primary">
+                      <FontAwesomeIcon icon={faUsers} />
+                    </button>
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
-
         </table>
+        {/* Pagination */}
+        <nav>
+          <ul className="pagination">
+            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+              <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+            </li>
+            {paginationLinks}
+            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+              <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+            </li>
+          </ul>
+        </nav>
       </div>
-
     </div>
   );
 };
