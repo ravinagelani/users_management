@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const EditCompany = ({ company, onUpdate }) => {
   const [editedCompany, setEditedCompany] = useState(company);
   const [modalVisible, setModalVisible] = useState(false);
+
+
+  useEffect(() => {
+    setEditedCompany(company);
+  }, [company]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

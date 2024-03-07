@@ -45,19 +45,6 @@ const CompanyList = () => {
       console.error('Error fetching companies:', error);
       if (error.response && error.response.status === 401) {
         console.log('Token expired or invalid, refreshing token...');
-        // try {
-        //   const refreshToken = localStorage.getItem('refreshToken');
-        //   if (refreshToken) {
-        //     await refreshToken(); // Call refreshToken function to get a new access token
-        //     // Retry the original API call after refreshing the token
-        //     return fetchCompanies();
-        //   } else {
-        //     throw new Error('Refresh token is missing');
-        //   }
-        // } catch (refreshError) {
-        //   console.error('Error refreshing token:', refreshError);
-        //   navigate('/login');
-        // }
       } else {
         setLoading(false);
       }
@@ -188,7 +175,7 @@ const CompanyList = () => {
           </tbody>
         </table>
         {/* Pagination */}
-        <nav>
+        <nav className="d-flex justify-content-center">
           <ul className="pagination">
             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
               <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
