@@ -32,14 +32,14 @@ const Login = () => {
                 const responseData = response.data;
                 if (responseData.success) {
                     localStorage.setItem('token', responseData.data.token.access);
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Login successful!",
-                        icon: "success",
-                        confirmButtonText: "OK"
-                    }).then(() => {
+                    // Swal.fire({
+                    //     title: "Success!",
+                    //     text: "Login successful!",
+                    //     icon: "success",
+                    //     confirmButtonText: "OK"
+                    // }).then(() => {
                         navigate('/');
-                    });
+                    // });
                 } else {
                     Swal.fire({
                         title: "Error!",

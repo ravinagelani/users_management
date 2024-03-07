@@ -40,7 +40,7 @@ const UpdateDepartment = ({ department, companyId, onUpdate }) => {
       console.error('Error updating department:', error);
       Swal.fire({
         title: 'Error!',
-        text: 'An error occurred while updating the department. Please try again later.',
+        text: 'A department with this name already exists in the company.',
         icon: 'error'
       });
     }

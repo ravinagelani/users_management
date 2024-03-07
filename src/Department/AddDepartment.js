@@ -66,11 +66,11 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
 
   return (
     <div className="container">
-
+      <div className="text-end">
       <button type="button" className="btn btn-primary" onClick={openModal}>
         Add Department
       </button>
-      
+      </div>
       {modalVisible && (
         <div className="modal" style={{ display: modalVisible ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="modal-dialog">

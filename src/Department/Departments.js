@@ -7,6 +7,7 @@ import { faTrashAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import AddDepartment from './AddDepartment';
 import UpdateDepartment from './UpdateDepartment'; // Import UpdateDepartment component
+import Navbar from '../components/Auth/Navbar';
 
 const Departments = () => {
   const { companyId } = useParams();
@@ -87,6 +88,8 @@ const Departments = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
+    <div>
+    <Navbar />
     <div className="container">
       <h1 className="text-center">Departments</h1>
       <hr />
@@ -94,7 +97,7 @@ const Departments = () => {
       {companyNotFound ? (
         <div className="text-center"><b>Company not found</b></div>
       ) : (
-          <table className="table table-bordered mt-5">
+          <table className="table table-bordered mt-3">
             <thead className="table table-secondary">
               <tr>
                 <th>Name</th>
@@ -126,13 +129,13 @@ const Departments = () => {
                     <Link to={`/departments/${department.id}/employees?companyId=${companyId}`} className="btn btn-outline-primary">
                       <FontAwesomeIcon icon={faUsers} />
                     </Link>
-
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+      </div>
     </div>
   );
 };

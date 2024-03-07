@@ -97,10 +97,11 @@ const AddEmployees = ({ companyId, departmentId, onEmployeesAdded }) => {
 
     return (
         <div className="container-fluid">
+            <div className="text-end">
            <button type="button" className="btn btn-primary" onClick={openModal}>
                 Add Employee
-        </button>
-
+            </button>
+            </div>
             {modalVisible && (
                 <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
                     <div className="modal-dialog">

@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import UpdateEmployees from '/Users/imac/Documents/ravina/react/users-management/src/Employees/UpdateEmployees.js'
-import AddEmployees from '/Users/imac/Documents/ravina/react/users-management/src/Employees/AddEmployees.js';
+import UpdateEmployees from '../Employees/UpdateEmployees.js'
+import AddEmployees from '../Employees/AddEmployees.js';
+import Navbar from '../components/Auth/Navbar';
 
 const DepartmentEmployees = () => {
     const { companyId, departmentId } = useParams();
@@ -77,11 +78,13 @@ const DepartmentEmployees = () => {
     if (loading) return <div>Loading...</div>;
 
     return (
+        <div>
+        <Navbar />
         <div className="container-fluid">
             <h2 className="text-center mt-4">Employees in this Department</h2>
             <hr />
             <AddEmployees companyId={companyId} departmentId={departmentId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} />
-            <table className="table table-bordered border-dark mt-5">
+            <table className="table table-bordered border-dark mt-3">
                 <thead className="table table-secondary border-dark">
                     <tr>
                         <th>Name</th>
@@ -123,6 +126,8 @@ const DepartmentEmployees = () => {
                 </tbody>
             </table>
         </div>
+     </div>
+
     );
 };
 

@@ -33,7 +33,7 @@ const EditCompany = ({ company, onUpdate }) => {
       );
       let response_data = response.data;
       console.log("---response_data---", response_data);
-      onUpdate(response_data.data.company); // updated company
+      onUpdate(response_data.data); // updated company
       setModalVisible(false);
       Swal.fire({
         title: 'Success!',

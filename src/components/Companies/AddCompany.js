@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 const AddCompany = ({ onCompanyAdded }) => {
     const [company, setCompany] = useState({ name: '', location: '', about: '', type: '' });
     const [modalVisible, setModalVisible] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null); // Remove error message after 5 seconds
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -12,7 +22,7 @@ const AddCompany = ({ onCompanyAdded }) => {
             let authToken = localStorage.getItem('token');
             const bakend_host = process.env.REACT_APP_BACKEND_HOST;
             const response = await axios.post(
-                 `${bakend_host}/api/companies/`,
+                `${bakend_host}/api/companies/`,
                 {
                     name: company.name,
                     location: company.location,
@@ -34,25 +44,16 @@ const AddCompany = ({ onCompanyAdded }) => {
                 onCompanyAdded(response_data.data.Company);
                 setCompany({ name: '', location: '', about: '', type: '' });
                 setModalVisible(false);
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Company added successfully!',
-                    icon: 'success'
-                });
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to add company. Please try again later.',
-                    icon: 'error'
-                });
+                setError(null); // Clear any previous errors
+                setTimeout(() => {
+                    setError(null);
+                }, 5000); // Hide the success message after 5 seconds
             }
         } catch (error) {
-            console.error('Error adding company:', error);
-             Swal.fire({
-                title: 'Error!',
-                text: 'companies with this name already exists',
-                icon: 'error'
-            });
+            let res = error.response.data.errors
+            let err = Object.values(res).flat();
+            console.error('Error adding company:', err);
+            setError(err.join(',')); // Set the error message
         }
     };
 
@@ -66,19 +67,25 @@ const AddCompany = ({ onCompanyAdded }) => {
 
     const closeModal = () => {
         setModalVisible(false);
+        setError(null); // Clear error message when closing modal
     };
 
     return (
         <div className="container my-3">
-            
-            <button type="button" className="btn btn-primary" onClick={openModal}>
-                Add Company
-            </button>
+
+            <div className="text-end">
+                <button type="button" className="btn btn-primary" onClick={openModal}>
+                    Add Company
+                </button>
+            </div>
 
             {modalVisible && (
                 <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
+                            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                                <strong>Error:</strong> {error}
+                            </div>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">Add Company</h5>
                                 <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>

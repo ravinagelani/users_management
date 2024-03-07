@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddEmployees from './AddEmployees';
+import Navbar from '../components/Auth/Navbar';
 
 const Employees = () => {
     const { companyId } = useParams();
@@ -42,11 +43,14 @@ const Employees = () => {
     if (error) return <div>Error: {error}</div>;
 
     return (
+        <div>
+            <Navbar />
+      
         <div className="container">
             <h1 className="text-center">Employees</h1>
             <hr />
             <AddEmployees companyId={companyId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} />
-            <table className="table table-bordered mt-5">
+            <table className="table table-bordered mt-3">
                 <thead className="table table-secondary">
                     <tr>
                         <th>Company</th>
@@ -79,6 +83,7 @@ const Employees = () => {
                 </tbody>
             </table>
         </div >
+        </div>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { refreshToken } from './AuthToken.js'
+// import { refreshToken } from '../Auth/AuthToken.js'
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import AddCompany from './AddCompany';
 import EditCompany from './EditCompany';
@@ -10,7 +10,6 @@ import { faTrashAlt, faBuilding, faUsers } from '@fortawesome/free-solid-svg-ico
 import Swal from 'sweetalert2';
 
 const CompanyList = () => {
-  // let navigate = useNavigate();
   const {id} = useParams();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,11 +93,7 @@ const CompanyList = () => {
       );
     }
   };
-   
-  // Handle edit functionality
-  const handleEdit = (companyId) => {
-    // Edit logic
-  };
+ 
   const handleCompanyUpdated = (updatedCompany) => {
     setCompanies(companies.map(company =>
       company.id === updatedCompany.id ? updatedCompany : company
@@ -132,11 +127,11 @@ const CompanyList = () => {
               <th>Location</th>
               <th>About</th>
               <th>Type</th>
-              <th>Created</th>
-              <th>Updated</th>
+              {/* <th>Created</th>
+              <th>Updated</th> */}
               <th>Active</th>
               <th colSpan="2" className="text-center">Action</th>
-              <th>dep</th>
+              <th>Dep</th>
               <th>Employees</th>
             </tr>
           </thead>
@@ -149,8 +144,8 @@ const CompanyList = () => {
                 <td>{company.location}</td>
                 <td>{company.about}</td>
                 <td>{company.type}</td>
-                <td>{company.created}</td>
-                <td>{company.updated}</td>
+                {/* <td>{company.created}</td>
+                <td>{company.updated}</td> */}
                 <td>{company.active ? 'Yes' : 'No'}</td>
                 <td><EditCompany company={company} onUpdate={handleCompanyUpdated} /></td>
                 <td><button className="btn btn-outline-danger" onClick={() => handleDelete(company.id)}>

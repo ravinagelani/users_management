@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from '../Auth/Navbar';
 import Employees from '/Users/imac/Documents/ravina/react/users-management/src/Employees/Employees.js';
 
 const CompanyDetails = () => {
