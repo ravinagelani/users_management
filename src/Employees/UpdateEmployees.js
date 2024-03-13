@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
-const UpdateEmployee = ({ employee, companyId, onUpdate }) => {
-    const [editedEmployee, setEditedEmployee] = useState({ ...employee });
+const UpdateEmployees = ({ employee, companyId, onUpdate }) => {
+    const [editedEmployee, setEditedEmployee] = useState(employee);
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleChange = e => {
@@ -11,12 +11,13 @@ const UpdateEmployee = ({ employee, companyId, onUpdate }) => {
         setEditedEmployee(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (e) => {
+        e.preventDefault();
         try {
             const authToken = localStorage.getItem('token');
             const backend_host = process.env.REACT_APP_BACKEND_HOST;
             const updatedEmployee = { ...editedEmployee, company_id: companyId };
-            await axios.patch(
+            const response = await axios.patch(
                 `${backend_host}/api/employees/${editedEmployee.id}`,
                 updatedEmployee,
                 {
@@ -27,20 +28,12 @@ const UpdateEmployee = ({ employee, companyId, onUpdate }) => {
                     withCredentials: true,
                 }
             );
+            let response_data = response.data
+            console.log("---response_data---", response_data);
             onUpdate(updatedEmployee);
             setModalVisible(false);
-            Swal.fire({
-                title: 'Success!',
-                text: 'Employee updated successfully!',
-                icon: 'success'
-            });
         } catch (error) {
             console.error('Error updating employee:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'An error occurred while updating the employee. Please try again later.',
-                icon: 'error'
-            });
         }
     };
 
@@ -112,4 +105,4 @@ const UpdateEmployee = ({ employee, companyId, onUpdate }) => {
     );
 };
 
-export default UpdateEmployee;
+export default UpdateEmployees;

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
   const [newDepartment, setNewDepartment] = useState({
@@ -9,6 +9,18 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
     company_id: companyId
   });
   const [modalVisible, setModalVisible] = useState(showModal);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null); // Remove error message after 3 seconds
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -34,25 +46,32 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
           company_id: companyId
         });
         closeModal();
-        Swal.fire({
-          title: 'Success!',
-          text: 'Department added successfully!',
-          icon: 'success'
-        });
-      } else {
-        Swal.fire({
-          title: 'Error!',
-          text: 'Failed to add department. Please try again later.',
-          icon: 'error'
-        });
+        setError(null);
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+        //   Swal.fire({
+        //     title: 'Success!',
+        //     text: 'Department added successfully!',
+        //     icon: 'success'
+        //   });
+        // } else {
+        //   Swal.fire({
+        //     title: 'Error!',
+        //     text: 'Failed to add department. Please try again later.',
+        //     icon: 'error'
+        //   });
       }
     } catch (error) {
-      console.error('Error adding department:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'An error occurred while adding the department.',
-        icon: 'error'
-      });
+      let res = error.response.data.errors.non_field_errors;
+      let err = Object.values(res).flat();
+      console.error('Error adding department:', err);
+      setError(err);
+      // Swal.fire({
+      //   title: 'Error!',
+      //   text: 'An error occurred while adding the department.',
+      //   icon: 'error'
+      // });
     }
   };
 
@@ -62,19 +81,23 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
 
   const closeModal = () => {
     setModalVisible(false);
+    setError(null)
   };
 
   return (
     <div className="container">
       <div className="text-end">
-      <button type="button" className="btn btn-primary" onClick={openModal}>
-        Add Department
+        <button type="button" className="btn btn-primary" onClick={openModal}>
+          Add Department
       </button>
       </div>
       {modalVisible && (
         <div className="modal" style={{ display: modalVisible ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
+              <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                <strong>Error:</strong> {error}
+              </div>
               <div className="modal-header">
                 <h5 className="modal-title">Add Department</h5>
                 <button type="button" className="btn-close" onClick={closeModal}></button>

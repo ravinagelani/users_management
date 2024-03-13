@@ -89,52 +89,56 @@ const Departments = () => {
 
   return (
     <div>
-    <Navbar />
-    <div className="container">
-      <h1 className="text-center">Departments</h1>
-      <hr />
-      <AddDepartment companyId={companyId} setDepartments={setDepartments} onDepartmentAdded={handleDepartmentAdded} />
-      {companyNotFound ? (
-        <div className="text-center"><b>Company not found</b></div>
-      ) : (
-          <table className="table table-bordered mt-3">
-            <thead className="table table-secondary">
+      <Navbar />
+      <div className="container">
+        <h1 className="text-center">Departments</h1>
+        <hr />
+        <AddDepartment companyId={companyId} setDepartments={setDepartments} onDepartmentAdded={handleDepartmentAdded} />
+        <table className="table table-bordered mt-3">
+          <thead className="table table-secondary">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Created</th>
+              <th>Updated</th>
+              <th colSpan="2" className="text-center">Action</th>
+              <th>Employees</th>
+            </tr>
+          </thead>
+          <tbody>
+            {companyNotFound ? (
               <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th colSpan="2" className="text-center">Action</th>
-                <th>Employees</th>
+                <td colSpan="7" className="text-center"><b>Company not found</b></td>
               </tr>
-            </thead>
-            <tbody>
-              {departments.map(department => (
-                <tr key={department.id}>
-                  <td>{department.name}</td>
-                  <td>{department.description}</td>
-                  <td>{department.created}</td>
-                  <td>{department.updated}</td>
-                  <td>
-                    {department && (
-                      <UpdateDepartment department={department} companyId={companyId} onUpdate={handleupdatedDepartment} />
-                    )}
-                  </td>
-                  <td>
-                    <button className="btn btn-outline-danger" onClick={() => handleDelete(department.id)}>
-                      <FontAwesomeIcon icon={faTrashAlt} />
-                    </button>
-                  </td>
-                  <td>
-                    <Link to={`/departments/${department.id}/employees?companyId=${companyId}`} className="btn btn-outline-primary">
-                      <FontAwesomeIcon icon={faUsers} />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+            ) : (
+                <>
+                  {departments.map(department => (
+                    <tr key={department.id}>
+                      <td>{department.name}</td>
+                      <td>{department.description}</td>
+                      <td>{department.created}</td>
+                      <td>{department.updated}</td>
+                      <td>
+                        {department && (
+                          <UpdateDepartment department={department} companyId={companyId} onUpdate={handleupdatedDepartment} />
+                        )}
+                      </td>
+                      <td>
+                        <button className="btn btn-outline-danger" onClick={() => handleDelete(department.id)}>
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </button>
+                      </td>
+                      <td>
+                        <Link to={`/departments/${department.id}/employees?companyId=${companyId}`} className="btn btn-outline-primary">
+                          <FontAwesomeIcon icon={faUsers} />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              )}
+          </tbody>
+        </table>  
       </div>
     </div>
   );

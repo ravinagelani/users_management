@@ -30,6 +30,7 @@ function App() {
     setIsAuthenticated(false);
     return <Navigate to="/login" />;
   };
+  
 
   return (
     <Router>

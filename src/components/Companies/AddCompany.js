@@ -9,8 +9,8 @@ const AddCompany = ({ onCompanyAdded }) => {
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => {
-                setError(null); // Remove error message after 5 seconds
-            }, 5000);
+                setError(null); // Remove error message after 3 seconds
+            }, 3000);
 
             return () => clearTimeout(timer);
         }
@@ -47,7 +47,7 @@ const AddCompany = ({ onCompanyAdded }) => {
                 setError(null); // Clear any previous errors
                 setTimeout(() => {
                     setError(null);
-                }, 5000); // Hide the success message after 5 seconds
+                }, 3000); // Hide the success message after 3 seconds
             }
         } catch (error) {
             let res = error.response.data.errors
@@ -104,10 +104,12 @@ const AddCompany = ({ onCompanyAdded }) => {
                                         <label htmlFor="about" className="form-label">About</label>
                                         <input type="text" className="form-control" id="about" name="about" value={company.about} onChange={handleChange} minLength={5} required />
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="type" className="form-label">Type</label>
-                                        <input type="text" className="form-control" id="type" name="type" value={company.type} onChange={handleChange} minLength={5} required />
-                                    </div>
+                                    <label htmlFor="type" className="form-label">Type</label>
+                                        <select className="form-control" id="type" name="type" value={company.type} onChange={handleChange} required>
+                                            <option value="">Select Type</option>
+                                            <option value="IT">IT</option>
+                                            <option value="Non-IT">Non-IT</option>
+                                        </select>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>

@@ -5,7 +5,17 @@ import Swal from 'sweetalert2';
 const EditCompany = ({ company, onUpdate }) => {
   const [editedCompany, setEditedCompany] = useState(company);
   const [modalVisible, setModalVisible] = useState(false);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null); // Remove error message after 3 seconds
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   useEffect(() => {
     setEditedCompany(company);
@@ -35,14 +45,18 @@ const EditCompany = ({ company, onUpdate }) => {
       console.log("---response_data---", response_data);
       onUpdate(response_data.data); // updated company
       setModalVisible(false);
-      Swal.fire({
-        title: 'Success!',
-        text: 'Company updated successfully!',
-        icon: 'success'
-      });
+      //   Swal.fire({
+      //     title: 'Success!',
+      //     text: 'Company updated successfully!',
+      //     icon: 'success'
+      //   });
     } catch (error) {
-      console.error('Error updating company:', error);
-      alert('An error occurred while updating the company. Please try again later.');
+      let res = error.response.data.errors
+      let err = Object.values(res).flat();
+      console.error('Error adding company:', err);
+      setError(err.join(','));
+      // console.error('Error updating company:', error);
+      // alert('An error occurred while updating the company. Please try again later.');
     }
   };
 
@@ -57,12 +71,15 @@ const EditCompany = ({ company, onUpdate }) => {
   return (
     <div>
       <button type="button" className="btn btn-outline-primary" onClick={openModal}>
-        Edit 
+        Edit
       </button>
       {modalVisible && (
         <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
           <div className="modal-dialog">
             <div className="modal-content">
+              <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                <strong>Error:</strong> {error}
+              </div>
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">Edit Company</h5>
                 <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>

@@ -35,9 +35,9 @@ const Employees = () => {
         fetchEmployees();
     }, [companyId]);
 
-    const handleEmployeesAdded = (newEmployees) => {
-        setEmployees([...employees, newEmployees]);
-    };
+    // const handleEmployeesAdded = (newEmployees) => {
+    //     setEmployees([...employees, newEmployees]);
+    // };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -45,11 +45,10 @@ const Employees = () => {
     return (
         <div>
             <Navbar />
-      
         <div className="container">
             <h1 className="text-center">Employees</h1>
             <hr />
-            <AddEmployees companyId={companyId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} />
+            {/* <AddEmployees companyId={companyId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} /> */}
             <table className="table table-bordered mt-3">
                 <thead className="table table-secondary">
                     <tr>
