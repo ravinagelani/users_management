@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import AddEmployees from './AddEmployees';
+// import AddEmployees from './AddEmployees';
 import Navbar from '../components/Auth/Navbar';
 
 const Employees = () => {
@@ -45,43 +45,50 @@ const Employees = () => {
     return (
         <div>
             <Navbar />
-        <div className="container">
-            <h1 className="text-center">Employees</h1>
-            <hr />
-            {/* <AddEmployees companyId={companyId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} /> */}
-            <table className="table table-bordered mt-3">
-                <thead className="table table-secondary">
-                    <tr>
-                        <th>Company</th>
-                        <th>Department</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Phone</th>
-                        <th>About</th>
-                        <th>Position</th>
-                        <th>Created</th>
-                        <th>Updated</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees.map(employee => (
-                        <tr key={employee.id}>
-                            <td>{employee.company}</td>
-                            <td>{employee.department}</td>
-                            <td>{employee.name}</td>
-                            <td>{employee.email}</td>
-                            <td>{employee.address}</td>
-                            <td>{employee.phone}</td>
-                            <td>{employee.about}</td>
-                            <td>{employee.position}</td>
-                            <td>{new Date(employee.created).toLocaleString()}</td>
-                            <td>{new Date(employee.updated).toLocaleString()}</td>
+            <div className="container">
+                <h1 className="text-center">Employees</h1>
+                <hr />
+                {/* <AddEmployees companyId={companyId} setEmployees={setEmployees} onEmployeesAdded={handleEmployeesAdded} /> */}
+                <table className="table table-bordered mt-3">
+                    <thead className="table table-secondary">
+                        <tr>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>About</th>
+                            <th>Position</th>
+                            <th>Created</th>
+                            <th>Updated</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div >
+                    </thead>
+                    <tbody>
+                        {employees.length === 0 ? (
+                            <tr>
+                                <td colSpan="10" className="text-center">Employees not found</td>
+                            </tr>
+                        ) : (
+                                employees.map(employee => (
+                                    <tr key={employee.id}>
+                                        <td>{employee.company}</td>
+                                        <td>{employee.department}</td>
+                                        <td>{employee.name}</td>
+                                        <td>{employee.email}</td>
+                                        <td>{employee.address}</td>
+                                        <td>{employee.phone}</td>
+                                        <td>{employee.about}</td>
+                                        <td>{employee.position}</td>
+                                        <td>{new Date(employee.created).toLocaleString()}</td>
+                                        <td>{new Date(employee.updated).toLocaleString()}</td>
+                                    </tr>
+                                ))
+                            )}
+                    </tbody>
+
+                </table>
+            </div >
         </div>
     );
 };

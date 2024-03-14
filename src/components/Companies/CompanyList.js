@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { refreshToken } from '../Auth/AuthToken.js'
 import axios from 'axios';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import AddCompany from './AddCompany';
 import EditCompany from './EditCompany';
@@ -10,7 +10,7 @@ import { faTrashAlt, faBuilding, faUsers } from '@fortawesome/free-solid-svg-ico
 import Swal from 'sweetalert2';
 
 const CompanyList = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,10 +21,12 @@ const CompanyList = () => {
     fetchCompanies();
   }, [currentPage]); // Fetch data whenever the currentPage changes
 
+  
   const fetchCompanies = async () => {
     try {
       let authToken = localStorage.getItem('token');
       const backend_host = process.env.REACT_APP_BACKEND_HOST;
+      console.log('---', backend_host);
       const response = await axios.get(`${backend_host}/api/companies/`, {
         params: {
           page: currentPage,
@@ -93,7 +95,7 @@ const CompanyList = () => {
       );
     }
   };
- 
+
   const handleCompanyUpdated = (updatedCompany) => {
     setCompanies(companies.map(company =>
       company.id === updatedCompany.id ? updatedCompany : company
@@ -156,7 +158,7 @@ const CompanyList = () => {
                     <button className="btn btn-outline-primary">
                       <FontAwesomeIcon icon={faBuilding} />
                     </button>
-                  </Link>
+                  </Link> 
                 </td>
                 <td>
                   <Link to={`/companies/${company.id}/employees`}>

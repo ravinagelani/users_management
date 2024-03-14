@@ -37,9 +37,9 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
       const response = await axios.post(`${backend_host}/api/departments/`, newDepartment);
 
       if (response.status === 201) {
-        if (onDepartmentAdded) {
+        
           onDepartmentAdded(response.data.data.Department);
-        }
+        
         setNewDepartment({
           name: '',
           description: '',
@@ -95,12 +95,12 @@ const AddDepartment = ({ companyId, showModal, onDepartmentAdded }) => {
         <div className="modal" style={{ display: modalVisible ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
-              <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
-                <strong>Error:</strong> {error}
-              </div>
               <div className="modal-header">
                 <h5 className="modal-title">Add Department</h5>
                 <button type="button" className="btn-close" onClick={closeModal}></button>
+              </div>
+              <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                <strong>{error}</strong> 
               </div>
               <div className="modal-body">
                 <form onSubmit={handleSubmit}>

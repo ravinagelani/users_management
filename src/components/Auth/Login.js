@@ -18,6 +18,28 @@ const Login = () => {
         }
     }, [navigate]);
 
+    const updateAccesstoken = async () => {
+        try {
+            const refreshToken = localStorage.getItem('refresh_token');
+            console.log("--calling----refreshToken---", refreshToken)
+            if (!refreshToken) {
+                throw new Error('Refresh token is missing.');
+            }
+            const bakend_host = process.env.REACT_APP_BACKEND_HOST;
+            const response = await axios.post(`${bakend_host}/api/token/refresh/`, {
+                refresh: refreshToken
+            });
+            console.log("--response Access token--", response)
+            const newAccessToken = response.data.access;
+            localStorage.setItem('token', newAccessToken);
+            localStorage.setItem('refresh_token', response.data.refresh);
+            console.log('Access token updated successfully.');
+        } catch (error) {
+            console.error('Error updating access token:', error);
+            // Handle token refresh error, possibly redirect to login page
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -32,14 +54,12 @@ const Login = () => {
                 const responseData = response.data;
                 if (responseData.success) {
                     localStorage.setItem('token', responseData.data.token.access);
-                    // Swal.fire({
-                    //     title: "Success!",
-                    //     text: "Login successful!",
-                    //     icon: "success",
-                    //     confirmButtonText: "OK"
-                    // }).then(() => {
-                        navigate('/');
-                    // });
+                    localStorage.setItem('refresh_token', responseData.data.token.refresh);
+                     navigate('/');
+                    // Call  
+                    setInterval(() => {
+                        updateAccesstoken();
+                    },  10 * 1000); // 10 second
                 } else {
                     Swal.fire({
                         title: "Error!",

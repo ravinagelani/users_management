@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Navbar from '../Auth/Navbar';
-import Employees from '/Users/imac/Documents/ravina/react/users-management/src/Employees/Employees.js';
+
 
 const CompanyDetails = () => {
   const { id } = useParams();
@@ -76,7 +76,7 @@ const CompanyDetails = () => {
         </Link>
         </tbody>
       </table>
-      <Employees companyId={id} />  
+      {/* <Employees companyId={id} />   */}
     </div>
   </div>
   </div>

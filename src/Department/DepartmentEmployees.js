@@ -57,7 +57,7 @@ const DepartmentEmployees = () => {
             if (!Array.isArray(newEmployees)) {
                 throw new Error('New employees must be provided in an array format.');
             }
-    
+
             // Update the employees state by concatenating new employees
             setEmployees(prevEmployees => [...prevEmployees, ...newEmployees]);
             console.log('New employees added:', newEmployees);
@@ -82,7 +82,7 @@ const DepartmentEmployees = () => {
             try {
                 const backend_host = process.env.REACT_APP_BACKEND_HOST;
                 const response = await axios.delete(`${backend_host}/api/employees/${employeeId}`);
-
+                console.log('--delete--', response);
                 // Remove the deleted employee from the state
                 setEmployees(employees.filter(employee => employee.id !== employeeId));
                 await Swal.fire('Deleted!', 'Employee data has been deleted.', 'success');
@@ -129,11 +129,10 @@ const DepartmentEmployees = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {employees.map(employee => {
-                            console.log('Current employee:', employee);
-                            return (
+                        {employees.length > 0 ? (
+                            employees.map(employee => (
                                 <tr key={employee.id}>
-                                    <td>{employee.name  || "N/A"}</td>
+                                    <td>{employee.name || "N/A"}</td>
                                     <td>{employee.email}</td>
                                     <td>{employee.address}</td>
                                     <td>{employee.phone}</td>
@@ -150,9 +149,14 @@ const DepartmentEmployees = () => {
                                         </button>
                                     </td>
                                 </tr>
-                            );
-                        })}
+                            ))
+                        ) : (
+                                <tr>
+                                    <td colSpan="9" className="text-center">No employees found</td>
+                                </tr>
+                            )}
                     </tbody>
+
                 </table>
             </div>
         </div>

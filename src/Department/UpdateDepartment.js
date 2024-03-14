@@ -39,7 +39,7 @@ const UpdateDepartment = ({ department, companyId, onUpdate }) => {
           withCredentials: true,
         }
       );
-  
+        console.log('---',response);
       onUpdate(updatedDepartment); // Pass the updated department data to the parent component
       setModalVisible(false);
       setError(null); // Clear any previous errors
@@ -95,12 +95,12 @@ const UpdateDepartment = ({ department, companyId, onUpdate }) => {
         <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
           <div className="modal-dialog">
             <div className="modal-content">
-            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
-                <strong>Error:</strong> {error}
-              </div>
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">Edit Department</h5>
                 <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+              </div>
+            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                <strong> {error}</strong>
               </div>
               <div className="modal-body">
                 <form>

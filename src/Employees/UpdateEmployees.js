@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 // import Swal from 'sweetalert2';
 
 const UpdateEmployees = ({ employee, companyId, onUpdate }) => {
     const [editedEmployee, setEditedEmployee] = useState(employee);
     const [modalVisible, setModalVisible] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null); // Remove error message after 3 seconds
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -32,8 +43,15 @@ const UpdateEmployees = ({ employee, companyId, onUpdate }) => {
             console.log("---response_data---", response_data);
             onUpdate(updatedEmployee);
             setModalVisible(false);
+            setError(null); // Clear any previous errors
+                setTimeout(() => {
+                    setError(null);
+                }, 3000);
         } catch (error) {
+            let res = error.response.data.errors
+            let err = Object.values(res).flat();
             console.error('Error updating employee:', error);
+            setError(err);
         }
     };
 
@@ -59,6 +77,9 @@ const UpdateEmployees = ({ employee, companyId, onUpdate }) => {
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">Edit Employee</h5>
                                 <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+                            </div>
+                            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                                <strong>{error}</strong> 
                             </div>
                             <form onSubmit={handleUpdate}>
                                 <div className="modal-body">

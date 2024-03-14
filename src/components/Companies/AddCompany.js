@@ -83,12 +83,12 @@ const AddCompany = ({ onCompanyAdded }) => {
                 <div className="modal fade show" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
-                                <strong>Error:</strong> {error}
-                            </div>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">Add Company</h5>
                                 <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+                            </div>
+                            <div className={`alert ${error ? 'alert-danger' : 'd-none'}`} role="alert">
+                                <strong> {error}</strong>
                             </div>
                             <form onSubmit={handleSubmit}>
                                 <div className="modal-body">
